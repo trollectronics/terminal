@@ -44,11 +44,17 @@ void terminal_init() {
 }
 
 void terminal_clear() {
+	volatile struct BiosInfo *bi = BIOS_INFO_ADDR;
 	int i;
 	volatile uint32_t *vgabuff = MEM_VGA_RAM;
 	
+	uint8_t bg = bi->def_bg;
+	uint32_t fill;
+	
+	fill = bg | (bg << 8) | (bg << 16) | (bg << 24);
+	
 	for (i = 0; i < W*H/4; i++)
-		vgabuff[i] = 0;
+		vgabuff[i] = fill;
 	
 	pos_x = pos_y = 0;
 }
